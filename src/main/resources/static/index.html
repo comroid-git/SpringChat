@@ -1,83 +1,12 @@
 <html>
 <head>
-    <style>
-        body {
-            background: black;
-        }
-        .chat {
-            color: green;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <title>Chat WebSocket</title>
     <script type="application/javascript" src="script/sockjs.js"></script>
     <script type="application/javascript" src="script/stomp.js"></script>
-    <script type="application/javascript">
-        var stompClient = null;
-
-        function setConnected(connected) {
-            document.getElementById('connect').disabled = connected;
-            document.getElementById('disconnect').disabled = !connected;
-            document.getElementById('conversationDiv').style.visibility
-                = connected ? 'visible' : 'hidden';
-            document.getElementById('login').style.visibility
-                = !connected ? 'visible' : 'hidden';
-            document.getElementById('response').innerHTML = '';
-        }
-
-        function connect() {
-            var socket = new SockJS('/chat');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
-                setConnected(true);
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/messages', function(messageOutput) {
-                    showMessageOutput(JSON.parse(messageOutput.body));
-                });
-            });
-        }
-
-        function disconnect() {
-            if(stompClient != null) {
-                stompClient.disconnect();
-            }
-            setConnected(false);
-            console.log("Disconnected");
-        }
-
-        function sendMessage() {
-            var from = document.getElementById('from').value;
-            var text = document.getElementById('text').value;
-            if (text === "")
-                return;
-            stompClient.send("/msg", {}, JSON.stringify({'from':from, 'text':text}));
-            document.getElementById('text').value = "";
-            document.getElementById('response').scrollTo(0, document.getElementById('response').scrollHeight)
-        }
-
-        function showMessageOutput(msg) {
-            var response = document.getElementById('response');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            var span = document.createElement('span');
-            span.style.color = msg.color;
-            span.textContent = '[' + msg.time + '] <' + msg.from + '> ' + msg.text;
-            p.appendChild(span);
-            response.appendChild(p);
-        }
-
-        function init() {
-            disconnect();
-            document.getElementById('text')
-                .addEventListener('keyup', function(event) {
-                    event.preventDefault();
-                    if (event.keyCode === 13) {
-                        document.getElementById("sendMessage").click();
-                    }
-                });
-        }
-    </script>
+    <script type="application/javascript" src="script.js"></script>
 </head>
-<body onload="init()">
+<body onload="init()" onclose="disconnect()">
 <div>
     <div id="login">
         <input type="text" id="from" placeholder="Choose a nickname"/>
@@ -85,16 +14,18 @@
     </div>
     <br />
     <div id="conversationDiv">
-        <div class="chat">
-            <p id="response" style="overflow-y: scroll; height:400px;"></p>
+        <div style="width: 80%; float: left;">
+            <div class="chat">
+                <p id="response" style="overflow-y: scroll; height:400px;"></p>
+            </div>
+            <div id="input">
+                <input type="text" id="text" style="width: 80%;" placeholder="Write a message..."/>
+                <button id="sendMessage" onclick="sendMessage();" style="width: 9%; text-align: center;">Send</button>
+                <button id="disconnect" disabled="disabled" onclick="disconnect();"  style="width: 9%;">Disconnect</button>
+            </div>
         </div>
-        <div id="input">
-            <input type="text" id="text" style="width: 80%;" placeholder="Write a message..."/>
-            <button id="sendMessage" onclick="sendMessage();" style="width: 9%; text-align: center;">Send</button>
-            <button id="disconnect" disabled="disabled" onclick="disconnect();"  style="width: 9%;">Disconnect</button>
-        </div>
+        <div id="userlist" style="overflow-y: scroll; height:400px; width: 19%; float: right;"></div>
     </div>
 </div>
-
 </body>
 </html>
