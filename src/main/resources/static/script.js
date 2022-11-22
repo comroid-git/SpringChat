@@ -17,7 +17,7 @@ function connect() {
         return;
     }
 
-    var socket = new SockJS('/chat');
+    var socket = new SockJS('/app');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         setConnected(true);
