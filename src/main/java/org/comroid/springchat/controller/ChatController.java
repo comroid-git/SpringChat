@@ -49,6 +49,7 @@ public class ChatController {
     public Set<String> userJoin(String username) {
         Usernames.add(username);
         return Usernames;
+        // blablablablablablablablablablablablablablablablabl
     }
 
     @MessageMapping("/users/leave")
