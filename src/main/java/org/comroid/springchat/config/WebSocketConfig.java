@@ -17,6 +17,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/app").withSockJS();
+        registry.addEndpoint("/app").setAllowedOriginPatterns("*").withSockJS();
     }
 }
