@@ -1,6 +1,6 @@
 package org.comroid.springchat.model;
 
-public class Message extends BacklogMessage {
+public class Message {
     private final String from;
     private final String text;
 
@@ -10,11 +10,6 @@ public class Message extends BacklogMessage {
 
     public String getText() {
         return text;
-    }
-
-    @Override
-    public Type getBacklogType() {
-        return Type.Message;
     }
 
     public Message() {

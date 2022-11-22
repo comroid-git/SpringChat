@@ -1,9 +1,9 @@
 package org.comroid.springchat.model;
 
-public abstract class BacklogMessage {
-    public abstract Type getBacklogType();
+public interface BacklogMessage {
+    Type getBacklogType();
 
-    public enum Type {
+    enum Type {
         Message,
         StatusUpdate
     }

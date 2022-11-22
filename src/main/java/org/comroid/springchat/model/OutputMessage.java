@@ -2,7 +2,7 @@ package org.comroid.springchat.model;
 
 import java.util.Calendar;
 
-public class OutputMessage extends Message {
+public class OutputMessage extends Message implements BacklogMessage {
     private final String time;
     private final String color;
 
@@ -12,6 +12,11 @@ public class OutputMessage extends Message {
 
     public String getColor() {
         return color;
+    }
+
+    @Override
+    public Type getBacklogType() {
+        return Type.Message;
     }
 
     public OutputMessage(String from, String text, String color) {

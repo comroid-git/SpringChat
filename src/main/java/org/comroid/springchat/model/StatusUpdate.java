@@ -1,6 +1,6 @@
 package org.comroid.springchat.model;
 
-public class StatusUpdate extends BacklogMessage {
+public class StatusUpdate implements BacklogMessage {
     private final Type type;
     private final String detail;
 
