@@ -1,9 +1,6 @@
 package org.comroid.springchat.controller;
 
-import org.comroid.springchat.model.Handshake;
-import org.comroid.springchat.model.Message;
-import org.comroid.springchat.model.OutputMessage;
-import org.comroid.springchat.model.StatusUpdate;
+import org.comroid.springchat.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,7 +16,7 @@ public class ChatController {
     private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
-    private final List<OutputMessage> backlog = new ArrayList<>();
+    private final List<BacklogMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
 
@@ -38,7 +35,9 @@ public class ChatController {
         String color = Colors.getOrDefault(from, "white");
         if (text.startsWith("/"))
             return null;
-        return appendToBacklog(new OutputMessage(from, text, color));
+        OutputMessage output = new OutputMessage(from, text, color);
+        appendToBacklog(output);
+        return output;
     }
 
     @MessageMapping("/users/handshake")
@@ -56,22 +55,25 @@ public class ChatController {
     @MessageMapping("/users/join")
     @SendTo("/topic/users")
     public Set<String> userJoin(String username) {
-        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_JOIN, username));
+        StatusUpdate update = new StatusUpdate(StatusUpdate.Type.USER_JOIN, username);
+        appendToBacklog(update);
+        broadcast.convertAndSend("/topic/status", update);
         return Users;
     }
 
     @MessageMapping("/users/leave")
     @SendTo("/topic/users")
     public Set<String> userLeave(String username) {
-        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username));
+        StatusUpdate update = new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username);
+        appendToBacklog(update);
+        broadcast.convertAndSend("/topic/status", update);
         Users.remove(username);
         return Users;
     }
 
-    private OutputMessage appendToBacklog(OutputMessage msg) {
+    private void appendToBacklog(BacklogMessage msg) {
         if (backlog.size() >= MAX_BACKLOG)
             backlog.remove(0);
         backlog.add(msg);
-        return msg;
     }
 }

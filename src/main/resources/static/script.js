@@ -33,10 +33,22 @@ function connect() {
     });
 }
 
+function handleBacklog(backlogMsg) {
+    switch (backlogMsg.backlogType) {
+        case 'Message':
+            return appendMessage(backlogMsg);
+        case 'StatusUpdate':
+            return appendStatusMessage(backlogMsg);
+        default:
+            console.error('Invalid log type: ' + backlogMsg.backlogType);
+            return;
+    }
+}
+
 function handleHandshake(handshake) {
     username = handshake.username;
     document.getElementById('response').innerHTML = '';
-    handshake.backlog.forEach(appendMessage);
+    handshake.backlog.forEach(handleBacklog);
     setConnected(true);
     subscriptionHandshake.unsubscribe();
     subscriptionStatus = stompClient.subscribe('/topic/status', function(status){
