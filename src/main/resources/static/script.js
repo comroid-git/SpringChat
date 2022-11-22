@@ -1,4 +1,7 @@
 var stompClient = null;
+var subscriptionHandshake;
+var subscriptionMessages;
+var subscriptionUsers;
 
 function setConnected(connected) {
     document.getElementById('connect').disabled = connected;
@@ -20,25 +23,28 @@ function connect() {
     var socket = new SockJS('/app');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
-        setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/handshake', function(valid){
-            if (!valid) {
-                console.error('Failed to connect: Username is already in use')
-                return;
-            }
-            stompClient.subscribe('/topic/messages', function(messageOutput) {
-                showMessageOutput(JSON.parse(messageOutput.body));
-            });
-            stompClient.subscribe('/topic/users', function(messageOutput) {
-                var data = JSON.parse(messageOutput.body);
-                document.getElementById('userlist').innerHTML = '';
-                data.forEach(addUserToUI);
-            });
-            stompClient.send("/app/users/join", {}, document.getElementById('from').value);
-        });
+        subscriptionHandshake = stompClient.subscribe('/topic/handshake', handleHandshake);
         stompClient.send('/app/users/handshake', {}, document.getElementById('from').value);
     });
+}
+
+function handleHandshake(valid) {
+    if (!valid) {
+        console.error('Failed to connect: Username is already in use')
+        return;
+    }
+    setConnected(true);
+    subscriptionHandshake.unsubscribe();
+    subscriptionMessages = stompClient.subscribe('/topic/messages', function(messageOutput) {
+        showMessageOutput(JSON.parse(messageOutput.body));
+    });
+    subscriptionUsers = stompClient.subscribe('/topic/users', function(messageOutput) {
+        var data = JSON.parse(messageOutput.body);
+        document.getElementById('userlist').innerHTML = '';
+        data.forEach(addUserToUI);
+    });
+    stompClient.send("/app/users/join", {}, document.getElementById('from').value);
 }
 
 function addUserToUI(user) {
@@ -51,6 +57,8 @@ function addUserToUI(user) {
 function disconnect() {
     if(stompClient != null) {
         stompClient.send("/app/users/leave", {}, document.getElementById('from').value);
+        subscriptionMessages.unsubscribe();
+        subscriptionUsers.unsubscribe();
         stompClient.disconnect();
     }
     setConnected(false);
