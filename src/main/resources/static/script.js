@@ -10,7 +10,7 @@ function setConnected(connected) {
     document.getElementById('connect').disabled = connected;
     document.getElementById('disconnect').disabled = !connected;
     document.getElementById('from').disabled = connected;
-    document.getElementById('conversationDiv').style.visibility
+    document.getElementById('conversation').style.visibility
         = connected ? 'visible' : 'hidden';
     document.getElementById('login').style.visibility
         = !connected ? 'visible' : 'hidden';
