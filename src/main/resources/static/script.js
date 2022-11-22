@@ -45,7 +45,7 @@ function handleHandshake(handshake) {
         document.getElementById('userlist').innerHTML = '';
         data.forEach(addUserToUI);
     });
-    stompClient.send("/app/users/join", {}, document.getElementById('from').value);
+    stompClient.send("/app/users/join", {}, username);
 }
 
 function addUserToUI(user) {
@@ -57,7 +57,7 @@ function addUserToUI(user) {
 
 function disconnect() {
     if(stompClient != null) {
-        stompClient.send("/app/users/leave", {}, document.getElementById('from').value);
+        stompClient.send("/app/users/leave", {}, username);
         subscriptionMessages.unsubscribe();
         subscriptionUsers.unsubscribe();
         stompClient.disconnect();
