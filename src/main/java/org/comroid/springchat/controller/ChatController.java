@@ -3,8 +3,11 @@ package org.comroid.springchat.controller;
 import org.comroid.springchat.model.Handshake;
 import org.comroid.springchat.model.Message;
 import org.comroid.springchat.model.OutputMessage;
+import org.comroid.springchat.model.StatusUpdate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.*;
@@ -16,6 +19,8 @@ public class ChatController {
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
     private final List<OutputMessage> backlog = new ArrayList<>();
+    @Autowired
+    private SimpMessagingTemplate broadcast;
     private final static int MAX_BACKLOG = 50;
 
     @MessageMapping("/msg")
@@ -51,12 +56,14 @@ public class ChatController {
     @MessageMapping("/users/join")
     @SendTo("/topic/users")
     public Set<String> userJoin(String username) {
+        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_JOIN, username));
         return Users;
     }
 
     @MessageMapping("/users/leave")
     @SendTo("/topic/users")
     public Set<String> userLeave(String username) {
+        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username));
         return Users;
     }
 

@@ -1,5 +1,6 @@
 var stompClient = null;
 var subscriptionHandshake;
+var subscriptionStatus;
 var subscriptionMessages;
 var subscriptionUsers;
 var username;
@@ -37,6 +38,9 @@ function handleHandshake(handshake) {
     handshake.backlog.forEach(appendMessage);
     setConnected(true);
     subscriptionHandshake.unsubscribe();
+    subscriptionStatus = stompClient.subscribe('/topic/status', function(status){
+        appendStatusMessage(JSON.parse(status.body));
+    });
     subscriptionMessages = stompClient.subscribe('/topic/messages', function(messageOutput) {
         appendMessage(JSON.parse(messageOutput.body));
     });
@@ -73,6 +77,29 @@ function sendMessage() {
     stompClient.send("/app/msg", {}, JSON.stringify({'from':username, 'text':text}));
     document.getElementById('text').value = "";
     document.getElementById('response').scrollTo(0, document.getElementById('response').scrollHeight)
+}
+
+function appendStatusMessage(status) {
+    var msg = "";
+    switch (status.type) {
+        case 'USER_JOIN':
+            msg = 'User ' + status.detail + ' joined'
+            break;
+        case 'USER_LEAVE':
+            msg = 'User ' + status.detail + ' left'
+            break;
+        default:
+            console.error('Invalid status update: ' + JSON.stringify(status))
+            return;
+    }
+    var response = document.getElementById('response');
+    var p = document.createElement('p');
+    p.style.wordWrap = 'break-word';
+    var span = document.createElement('span');
+    span.style.color = 'lightgoldenrodyellow';
+    span.textContent = msg;
+    p.appendChild(span);
+    response.appendChild(p);
 }
 
 function appendMessage(msg) {
