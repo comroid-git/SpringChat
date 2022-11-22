@@ -1,4 +1,4 @@
-package org.comroid.springchat.entity;
+package org.comroid.springchat.model;
 
 public class Message {
     private String from;

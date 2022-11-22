@@ -1,8 +1,8 @@
 package org.comroid.springchat.controller;
 
-import org.comroid.springchat.entity.Handshake;
-import org.comroid.springchat.entity.Message;
-import org.comroid.springchat.entity.OutputMessage;
+import org.comroid.springchat.model.Handshake;
+import org.comroid.springchat.model.Message;
+import org.comroid.springchat.model.OutputMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
