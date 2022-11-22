@@ -36,6 +36,11 @@ public class ChatController {
     @MessageMapping("/users/handshake")
     @SendTo("/topic/handshake")
     public Handshake userHandshake(String username) {
+        int c = 1;
+        while (Usernames.contains(username))
+            if (c == 1)
+                username += c++;
+            else username = username.substring(0, username.length() - String.valueOf(c).length());
         return new Handshake(username, backlog);
     }
 
