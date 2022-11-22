@@ -64,6 +64,7 @@ public class ChatController {
     @SendTo("/topic/users")
     public Set<String> userLeave(String username) {
         broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username));
+        Users.remove(username);
         return Users;
     }
 
