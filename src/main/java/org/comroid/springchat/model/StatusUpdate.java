@@ -1,6 +1,6 @@
 package org.comroid.springchat.model;
 
-public class StatusUpdate {
+public class StatusUpdate extends BacklogMessage {
     private final Type type;
     private final String detail;
 
@@ -10,6 +10,11 @@ public class StatusUpdate {
 
     public String getDetail() {
         return detail;
+    }
+
+    @Override
+    public BacklogMessage.Type getBacklogType() {
+        return BacklogMessage.Type.StatusUpdate;
     }
 
     public StatusUpdate() {
