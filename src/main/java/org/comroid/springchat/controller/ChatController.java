@@ -1,9 +1,6 @@
 package org.comroid.springchat.controller;
 
-import org.comroid.springchat.model.Handshake;
-import org.comroid.springchat.model.Message;
-import org.comroid.springchat.model.OutputMessage;
-import org.comroid.springchat.model.StatusUpdate;
+import org.comroid.springchat.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -19,7 +16,7 @@ public class ChatController {
     private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
-    private final List<OutputMessage> backlog = new ArrayList<>();
+    private final List<BacklogMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
 
