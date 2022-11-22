@@ -7,7 +7,7 @@
     <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.js"></script>
     <script type="application/javascript" src="script.js"></script>
 </head>
-<body onclose="disconnect()" onload="init()">
+<body onbeforeunload="disconnect()" onload="init()">
 <div>
     <div id="login">
         <h1>SpringChat</h1>
