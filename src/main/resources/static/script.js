@@ -2,6 +2,7 @@ var stompClient = null;
 var subscriptionHandshake;
 var subscriptionMessages;
 var subscriptionUsers;
+var username;
 
 function setConnected(connected) {
     document.getElementById('connect').disabled = connected;
@@ -11,7 +12,6 @@ function setConnected(connected) {
         = connected ? 'visible' : 'hidden';
     document.getElementById('login').style.visibility
         = !connected ? 'visible' : 'hidden';
-    document.getElementById('response').innerHTML = '';
 }
 
 function connect() {
@@ -24,20 +24,21 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
-        subscriptionHandshake = stompClient.subscribe('/topic/handshake', handleHandshake);
+        subscriptionHandshake = stompClient.subscribe('/topic/handshake', function(handshake){
+            handleHandshake(JSON.parse(handshake.body));
+        });
         stompClient.send('/app/users/handshake', {}, document.getElementById('from').value);
     });
 }
 
-function handleHandshake(valid) {
-    if (!valid) {
-        console.error('Failed to connect: Username is already in use')
-        return;
-    }
+function handleHandshake(handshake) {
+    username = handshake.username;
+    document.getElementById('response').innerHTML = '';
+    handshake.backlog.forEach(appendMessage);
     setConnected(true);
     subscriptionHandshake.unsubscribe();
     subscriptionMessages = stompClient.subscribe('/topic/messages', function(messageOutput) {
-        showMessageOutput(JSON.parse(messageOutput.body));
+        appendMessage(JSON.parse(messageOutput.body));
     });
     subscriptionUsers = stompClient.subscribe('/topic/users', function(messageOutput) {
         var data = JSON.parse(messageOutput.body);
@@ -66,16 +67,15 @@ function disconnect() {
 }
 
 function sendMessage() {
-    var from = document.getElementById('from').value;
     var text = document.getElementById('text').value;
     if (text === "")
         return;
-    stompClient.send("/app/msg", {}, JSON.stringify({'from':from, 'text':text}));
+    stompClient.send("/app/msg", {}, JSON.stringify({'from':username, 'text':text}));
     document.getElementById('text').value = "";
     document.getElementById('response').scrollTo(0, document.getElementById('response').scrollHeight)
 }
 
-function showMessageOutput(msg) {
+function appendMessage(msg) {
     var response = document.getElementById('response');
     var p = document.createElement('p');
     p.style.wordWrap = 'break-word';
