@@ -80,11 +80,22 @@ function showMessageOutput(msg) {
 
 function init() {
     disconnect();
+
+    // Enables pressing the Enter Key in the Send Message Prompt
     document.getElementById('text')
         .addEventListener('keyup', function(event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 document.getElementById("sendMessage").click();
+            }
+        });
+
+    // Enables pressing the Enter Key in the Login Prompt
+    document.getElementById('login')
+        .addEventListener('keyup', function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                connect();
             }
         });
 }
