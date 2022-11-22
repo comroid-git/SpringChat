@@ -1,3 +1,10 @@
+:root {
+    --content-height: 87%;
+    --content-width-large: 80%;
+    --content-width-medium: 19%;
+    --content-width-small: 9%;
+}
+
 body {
     background: black;
     font-family: "Roboto", sans-serif;
@@ -14,8 +21,8 @@ body {
 }
 
 #chatBox {
-    width: 80%;
-    height: 94%;
+    width: var(--content-width-large);
+    height: var(--content-height);
     float: left;
 }
 
@@ -25,22 +32,22 @@ body {
 }
 
 #text {
-    width: 80%;
+    width: var(--content-width-large);
 }
 
 #sendMessage {
-    width: 9%;
+    width: var(--content-width-small);
     text-align: center;
 }
 
 #disconnect {
-    width: 9%;
+    width: var(--content-width-small);
 }
 
 #userlist {
     overflow-y: scroll;
-    height: 94%;
-    width: 19%;
+    height: var(--content-height);
+    width: var(--content-width-medium);
     float: right;
 }
 
