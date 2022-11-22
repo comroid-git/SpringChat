@@ -35,7 +35,9 @@ public class ChatController {
         String color = Colors.getOrDefault(from, "white");
         if (text.startsWith("/"))
             return null;
-        return appendToBacklog(new OutputMessage(from, text, color));
+        OutputMessage output = new OutputMessage(from, text, color);
+        appendToBacklog(output);
+        return output;
     }
 
     @MessageMapping("/users/handshake")
@@ -53,22 +55,25 @@ public class ChatController {
     @MessageMapping("/users/join")
     @SendTo("/topic/users")
     public Set<String> userJoin(String username) {
-        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_JOIN, username));
+        StatusUpdate update = new StatusUpdate(StatusUpdate.Type.USER_JOIN, username);
+        appendToBacklog(update);
+        broadcast.convertAndSend("/topic/status", update);
         return Users;
     }
 
     @MessageMapping("/users/leave")
     @SendTo("/topic/users")
     public Set<String> userLeave(String username) {
-        broadcast.convertAndSend("/topic/status", new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username));
+        StatusUpdate update = new StatusUpdate(StatusUpdate.Type.USER_LEAVE, username);
+        appendToBacklog(update);
+        broadcast.convertAndSend("/topic/status", update);
         Users.remove(username);
         return Users;
     }
 
-    private OutputMessage appendToBacklog(OutputMessage msg) {
+    private void appendToBacklog(BacklogMessage msg) {
         if (backlog.size() >= MAX_BACKLOG)
             backlog.remove(0);
         backlog.add(msg);
-        return msg;
     }
 }
