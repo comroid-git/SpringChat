@@ -16,12 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class ChatController {
     public static final String CMD_COLOR = "/color ";
+    private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
     private final List<OutputMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
-    private final static int MAX_BACKLOG = 50;
 
     @MessageMapping("/msg")
     @SendTo("/topic/messages")

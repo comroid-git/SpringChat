@@ -1,13 +1,16 @@
 package org.comroid.springchat.model;
 
 public class StatusUpdate {
-    public enum Type {
-        USER_JOIN,
-        USER_LEAVE
+    private final Type type;
+    private final String detail;
+
+    public Type getType() {
+        return type;
     }
 
-    private Type type;
-    private String detail;
+    public String getDetail() {
+        return detail;
+    }
 
     public StatusUpdate() {
         this(null, null);
@@ -18,11 +21,8 @@ public class StatusUpdate {
         this.detail = detail;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public String getDetail() {
-        return detail;
+    public enum Type {
+        USER_JOIN,
+        USER_LEAVE
     }
 }
