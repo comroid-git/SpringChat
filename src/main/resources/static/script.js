@@ -4,6 +4,7 @@ var subscriptionStatus;
 var subscriptionMessages;
 var subscriptionUsers;
 var username;
+var soundNotify = new Audio('sound/notification.mp3');
 
 function setConnected(connected) {
     document.getElementById('connect').disabled = connected;
@@ -42,7 +43,10 @@ function handleHandshake(handshake) {
         appendStatusMessage(JSON.parse(status.body));
     });
     subscriptionMessages = stompClient.subscribe('/topic/messages', function(messageOutput) {
-        appendMessage(JSON.parse(messageOutput.body));
+        var msg = JSON.parse(messageOutput.body);
+        if (msg.from !== username)
+            soundNotify.play();
+        appendMessage(msg);
     });
     subscriptionUsers = stompClient.subscribe('/topic/users', function(messageOutput) {
         var data = JSON.parse(messageOutput.body);
