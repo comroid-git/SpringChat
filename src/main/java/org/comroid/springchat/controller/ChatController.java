@@ -27,7 +27,7 @@ public class ChatController {
             String color = text.substring(CMD_COLOR.length());
             Colors.put(from, color);
         }
-        String color = Colors.getOrDefault(from, "green");
+        String color = Colors.getOrDefault(from, "white");
         if (text.startsWith("/"))
             return null;
         return appendToBacklog(new OutputMessage(from, text, color));
