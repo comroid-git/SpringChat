@@ -14,20 +14,29 @@
         <input id="from" placeholder="Choose a nickname" type="text"/>
         <button id="connect" onclick="connect();">Connect</button>
     </div>
-    <br/>
-    <div id="conversationDiv">
-        <div id="chatBox">
-            <div class="chat">
-                <p id="response"></p>
-            </div>
-            <div id="input">
-                <input id="text" placeholder="Write a message..." type="text"/>
-                <button id="sendMessage" onclick="sendMessage();">Send</button>
-                <button disabled="disabled" id="disconnect" onclick="disconnect();">Disconnect</button>
-            </div>
-        </div>
-        <div id="userlist"></div>
-    </div>
+    <table id="conversation">
+        <tr>
+            <td class="tableColLarge tableRowSmall">Chat</td>
+            <td class="tableColSmall tableRowSmall">Userlist</td>
+        </tr>
+        <tr>
+            <td class="tableRowLarge">
+                <div id="chatBox">
+                    <div class="chat">
+                        <p id="response"></p>
+                    </div>
+                    <div id="input">
+                        <input id="text" placeholder="Write a message..." type="text"/>
+                        <button id="sendMessage" onclick="sendMessage();">Send</button>
+                        <button disabled="disabled" id="disconnect" onclick="disconnect();">Disconnect</button>
+                    </div>
+                </div>
+            </td>
+            <td class="tableRowLarge">
+                <div id="userlist"></div>
+            </td>
+        </tr>
+    </table>
 </div>
 </body>
 </html>

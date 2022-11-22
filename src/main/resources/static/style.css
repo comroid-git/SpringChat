@@ -11,6 +11,27 @@ body {
     color: white;
 }
 
+.tableRowSmall {
+    height: 20px;
+}
+
+.tableRowLarge {
+    height: var(--content-height);
+}
+
+.tableColSmall {
+    width: var(--content-width-medium);
+}
+
+.tableColLarge {
+    width: var(--content-width-large);
+}
+
+#conversation {
+    width: 100%;
+    height: 100%;
+}
+
 #login {
     position: fixed;
     top: 50%;
@@ -21,8 +42,8 @@ body {
 }
 
 #chatBox {
-    width: var(--content-width-large);
-    height: var(--content-height);
+    height: 100%;
+    width: 100%;
     float: left;
 }
 
@@ -46,8 +67,7 @@ body {
 
 #userlist {
     overflow-y: scroll;
-    height: var(--content-height);
-    width: var(--content-width-medium);
+    height: 100%;
     float: right;
 }
 
