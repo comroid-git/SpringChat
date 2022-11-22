@@ -43,7 +43,7 @@ public class ChatController {
         while (Users.contains(username))
             if (c == 1)
                 username += c++;
-            else username = username.substring(0, username.length() - String.valueOf(c).length());
+            else username = username.substring(0, username.length() - String.valueOf(c).length()) + c++;
         Users.add(username);
         return new Handshake(username, backlog);
     }
