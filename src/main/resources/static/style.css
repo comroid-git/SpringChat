@@ -1,13 +1,42 @@
 body {
     background: black;
 }
-.chat {
-    color: green;
-}
-.login {
+
+#login {
     position: fixed;
     top: 50%;
     left: 50%;
     margin-top: -50px;
     margin-left: -100px;
+}
+
+#chatBox {
+    width: 80%;
+    float: left;
+}
+
+#response {
+    overflow-y: scroll;
+    height: 400px;
+    color: white;
+}
+
+#text {
+    width: 80%;
+}
+
+#sendMessage {
+    width: 9%;
+    text-align: center;
+}
+
+#disconnect {
+    width: 9%;
+}
+
+#userlist {
+    overflow-y: scroll;
+    height: 400px;
+    width: 19%;
+    float: right;
 }
