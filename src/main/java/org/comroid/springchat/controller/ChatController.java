@@ -14,13 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatController {
     public static final String CMD_COLOR = "/color ";
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
-    private final Set<String> Usernames = new HashSet<>();
+    private final Set<String> Users = new HashSet<>();
     private final List<OutputMessage> backlog = new ArrayList<>();
     private final static int MAX_BACKLOG = 50;
 
     @MessageMapping("/msg")
     @SendTo("/topic/messages")
     public OutputMessage handleMessage(Message msg) {
+        if (!Users.contains(msg.getFrom()))
+            // ignore messages from non-handshaked users (security reasons)
+            return null;
         String from = msg.getFrom();
         String text = msg.getText();
         if (text.startsWith(CMD_COLOR)) {
@@ -37,25 +40,24 @@ public class ChatController {
     @SendTo("/topic/handshake")
     public Handshake userHandshake(String username) {
         int c = 1;
-        while (Usernames.contains(username))
+        while (Users.contains(username))
             if (c == 1)
                 username += c++;
             else username = username.substring(0, username.length() - String.valueOf(c).length());
+        Users.add(username);
         return new Handshake(username, backlog);
     }
 
     @MessageMapping("/users/join")
     @SendTo("/topic/users")
     public Set<String> userJoin(String username) {
-        Usernames.add(username);
-        return Usernames;
+        return Users;
     }
 
     @MessageMapping("/users/leave")
     @SendTo("/topic/users")
     public Set<String> userLeave(String username) {
-        Usernames.remove(username);
-        return Usernames;
+        return Users;
     }
 
     private OutputMessage appendToBacklog(OutputMessage msg) {
