@@ -16,6 +16,8 @@ public class ChatController {
     private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
+    private final Map<String, String> Nicks = new ConcurrentHashMap<>();
+
     private final List<BacklogMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
