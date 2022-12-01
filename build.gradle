@@ -9,10 +9,17 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
-    mavenCentral()
+    maven { url 'https://maven.comroid.org' }
+    mavenLocal()
+    jcenter()
 }
 
 dependencies {
+    if (findProject(':cmdr') != null) {
+        implementation project(':cmdr')
+    } else {
+        implementation 'org.comroid:cmdr:0.+'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
