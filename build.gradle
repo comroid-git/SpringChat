@@ -16,9 +16,9 @@ repositories {
 
 dependencies {
     if (findProject(':cmdr') != null) {
-        implementation project(':cmdr:spring')
+        implementation project(':cmdr')
     } else {
-        implementation 'org.comroid:cmdr-spring:0.+'
+        implementation 'org.comroid:cmdr:0.+'
     }
     // runtime dependency for cmdr
     runtimeOnly 'com.google.flogger:flogger-slf4j-backend:0.7.4'

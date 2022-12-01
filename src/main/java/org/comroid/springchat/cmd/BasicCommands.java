@@ -1,21 +1,18 @@
 package org.comroid.springchat.cmd;
 
+import org.comroid.cmdr.CommandManager;
 import org.comroid.cmdr.model.Command;
-import org.comroid.cmdr.spring.CmdrHandler;
-import org.comroid.cmdr.spring.SpringCmdr;
 import org.comroid.springchat.model.StatusUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Component
-public class BasicCommands extends CmdrHandler {
+public class BasicCommands {
     @Lazy // to avoid circular initialization
     @Autowired
-    private SpringCmdr cmdr;
+    private CommandManager cmdr;
     @Lazy // to avoid circular initialization
     @Autowired
     private SimpMessagingTemplate broadcast;
@@ -26,13 +23,13 @@ public class BasicCommands extends CmdrHandler {
                @Command.Arg(required = false) String topic*/
     ) {
         var sb = new StringBuilder();
-        sb.append("Available commands:\n");
-        cmdr.getCommands().values().forEach(obj -> sb.append(obj).append("\n"));
+        sb.append("Available commands:<br/>");
+        cmdr.getCommands().values().forEach(obj -> sb.append(obj).append("<br/>"));
         return sb.toString();
     }
 
     @Command(description = "Sends a private message")
-    public StatusUpdate msg(@Command.Arg(ordinal = 0) String user, @Command.ExtraArgs Object[] msg) {
+    public StatusUpdate msg(@Command.Arg(ordinal = 0) String user) {
         return null; // todo
     }
 
@@ -44,5 +41,10 @@ public class BasicCommands extends CmdrHandler {
     @Command(description = "Kicks a user")
     public void kick(@Command.Arg String username) {
         // todo
+    }
+
+    @Override
+    protected void handleResponse(Object user, Object o) {
+        super.handleResponse(user, o); // todo
     }
 }

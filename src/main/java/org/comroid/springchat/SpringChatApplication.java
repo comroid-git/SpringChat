@@ -12,11 +12,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-@ComponentScan(basePackages = {"org.comroid.springchat.config", "org.comroid.springchat.controller", "org.comroid.springchat.cmd", "org.comroid.cmdr.spring"})
+@ComponentScan(basePackages = {"org.comroid.springchat.config", "org.comroid.springchat.controller", "org.comroid.springchat.cmd"})
 @EntityScan(basePackages = {"org.comroid.springchat.entity"})
 public class SpringChatApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringChatApplication.class, args);
+    }
+
+    @Bean
+    public CommandManager getCommandManager() {
+        return new CommandManager();
     }
 }
 
