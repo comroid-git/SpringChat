@@ -16,6 +16,8 @@ public class ChatController {
     private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
+    private final Map<String, String> Nicks = new ConcurrentHashMap<>();
+
     private final List<BacklogMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
@@ -28,13 +30,39 @@ public class ChatController {
             return null;
         String from = msg.getFrom();
         String text = msg.getText();
-        if (text.startsWith(CMD_COLOR)) {
-            String color = text.substring(CMD_COLOR.length());
-            Colors.put(from, color);
+        boolean isCommand = text.startsWith("/");
+        if (isCommand) {
+            String[] cmds = text.split(" ");
+            switch (cmds[0]) {
+                case "/color":
+                    String color = cmds[1];
+                    Colors.put(from, color);
+                    break;
+                case "/nick":
+                    String nick = cmds[1];
+                    Nicks.put(from, nick);
+                    break;
+                case "/msg":
+                    break;
+                case "/kick":
+                    break;
+                case "/help":
+                    return new OutputMessage("Server",
+                            "Help" +
+                            "Commands:" +
+                            "/nick - changes the Username" +
+                            "/msg - whispers to another User" +
+                            "/help - shows all commands and how to use them" +
+                            "/kick - should only work when admins are present",
+                            "lightgoldenrodyellow"); // todo in need of html string formation stuff
+                default:
+                    //fixme this is very bad and a hack
+                    return new OutputMessage("Server", "Invalid command: " + text, "darkred");
+            }
+            return null;
         }
         String color = Colors.getOrDefault(from, "white");
-        if (text.startsWith("/"))
-            return null;
+        from = Nicks.getOrDefault(from, from);
         OutputMessage output = new OutputMessage(from, text, color);
         appendToBacklog(output);
         return output;
