@@ -1,5 +1,6 @@
 package org.comroid.springchat.controller;
 
+import org.comroid.cmdr.CommandManager;
 import org.comroid.springchat.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,13 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class ChatController {
-    public static final String CMD_COLOR = "/color ";
     private final static int MAX_BACKLOG = 50;
     private final Map<String, String> Colors = new ConcurrentHashMap<>();
     private final Set<String> Users = new HashSet<>();
     private final List<BacklogMessage> backlog = new ArrayList<>();
     @Autowired
     private SimpMessagingTemplate broadcast;
+    @Autowired
+    private CommandManager commandManager;
 
     @MessageMapping("/msg")
     @SendTo("/topic/messages")
@@ -28,13 +30,12 @@ public class ChatController {
             return null;
         String from = msg.getFrom();
         String text = msg.getText();
-        if (text.startsWith(CMD_COLOR)) {
-            String color = text.substring(CMD_COLOR.length());
-            Colors.put(from, color);
+        if (text.startsWith("/"))
+        {
+            commandManager.executeCommand(commandManager, text.substring(1).split(" "), new Object[0]);
+            return null;
         }
         String color = Colors.getOrDefault(from, "white");
-        if (text.startsWith("/"))
-            return null;
         OutputMessage output = new OutputMessage(from, text, color);
         appendToBacklog(output);
         return output;
