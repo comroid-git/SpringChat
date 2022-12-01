@@ -1,6 +1,6 @@
 package org.comroid.springchat.controller;
 
-import org.comroid.cmdr.CommandManager;
+import org.comroid.cmdr.spring.SpringCmdr;
 import org.comroid.springchat.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -22,7 +22,7 @@ public class ChatController {
     @Autowired
     private SimpMessagingTemplate broadcast;
     @Autowired
-    private CommandManager commandManager;
+    private SpringCmdr cmdr;
 
     @MessageMapping("/msg")
     @SendTo("/topic/messages")
@@ -34,7 +34,7 @@ public class ChatController {
         String text = msg.getText();
         if (text.startsWith("/"))
         {
-            commandManager.executeCommand(commandManager, text.substring(1).split(" "), new Object[0]);
+            cmdr.handleCommand(text.substring(1));
             return null;
         }
         String color = Colors.getOrDefault(from, "white");

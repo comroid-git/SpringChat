@@ -1,22 +1,24 @@
 package org.comroid.springchat.cmd;
 
-import org.comroid.cmdr.CommandManager;
 import org.comroid.cmdr.model.Command;
+import org.comroid.cmdr.spring.CmdrHandler;
+import org.comroid.cmdr.spring.SpringCmdr;
 import org.comroid.springchat.model.StatusUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
 @Component
-public class BasicCommands {
+public class BasicCommands extends CmdrHandler {
+    @Lazy // to avoid circular initialization
     @Autowired
-    private CommandManager commandManager;
-
-    @PostConstruct
-    public void init() {
-        commandManager.registerCommands(this);
-    }
+    private SpringCmdr cmdr;
+    @Lazy // to avoid circular initialization
+    @Autowired
+    private SimpMessagingTemplate broadcast;
 
     @Command(description = "Lists all available commands")
     public String help(
@@ -25,7 +27,7 @@ public class BasicCommands {
     ) {
         var sb = new StringBuilder();
         sb.append("Available commands:\n");
-        commandManager.getCommands().values().forEach(obj -> sb.append(obj).append("\n"));
+        cmdr.getCommands().values().forEach(obj -> sb.append(obj).append("\n"));
         return sb.toString();
     }
 
